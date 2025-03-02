@@ -10,22 +10,17 @@
     lib = nixpkgs.lib;
     pkgs = nixpkgs.legacyPackages.${system};
   in {
-    packages.${system}.default = pkgs.stdenv.mkDerivation rec {
+    packages.${system}.default = pkgs.buildNpmPackage {
       pname = "cs2-rcon-panel";
       version = "0.1.0";
+      npmDepsHash = "sha256-Af0luATZX7V86acWI42BAFprtkx9pYOyznWacsPddVQ=";
 
       src = ./.;
 
-      buildInputs = [ pkgs.nodejs_20 ];
+      npmBuildScript = "build";
 
-      buildPhase = ''
-        npm install
-      '';
-
-      # installPhase = ''
-      #   mkdir -p $out/bin
-      #   cp -r * $out/
-      # '';
+      # Specify Node.js version 20
+      nodejs = pkgs.nodejs_20;
     };
 
     nixosModules = {
@@ -76,4 +71,3 @@
     };
   };
 }
-
