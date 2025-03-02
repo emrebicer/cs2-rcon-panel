@@ -19,7 +19,7 @@ const gameRoutes = gameModule.router;
 const serverRoutes = require('./routes/server');
 const authRoutes = require('./routes/auth');
 
-const port = 3000;
+const port = process.env.PORT;
 
 // Serve static files from the 'public' directory
 app.use(express.static('public'));

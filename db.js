@@ -20,15 +20,15 @@ better_sqlite_client.exec(`
   )
 `);
 
-const default_username = 'cspanel';
-const default_password = 'v67ic55x4ghvjfj';
+const username = process.env.PANEL_USERNAME;
+const password = process.env.PANEL_PASSWORD;
 // Hash the default password
-const hashed_password = bcrypt.hashSync(default_password, 10);
+const hashed_password = bcrypt.hashSync(password, 10);
 
 // Check if the default user already exists
 const existing_user = better_sqlite_client.prepare(`
   SELECT * FROM users WHERE username = ?
-`).get(default_username);
+`).get(username);
 
 if (existing_user) {
     console.log('Default user already exists');
@@ -39,7 +39,7 @@ if (existing_user) {
     VALUES (?, ?)
   `);
 
-    insert_query.run(default_username, hashed_password);
+    insert_query.run(username, hashed_password);
     console.log('Default user created successfully.');
 }
 module.exports = {
