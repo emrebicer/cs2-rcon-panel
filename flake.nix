@@ -13,7 +13,7 @@
     packages.${system}.default = pkgs.buildNpmPackage {
       pname = "cs2-rcon-panel";
       version = "0.1.0";
-      npmDepsHash = "sha256-Af0luATZX7V86acWI42BAFprtkx9pYOyznWacsPddVQ=";
+      npmDepsHash = "sha512-uKpLlJfmIsCtelVmivHqu1rAz5gK54t5Oet38i1mDBlSpplqAj0x30zWS3qqewy09CpVgHvIffrNBoJgYC/1ag==";
 
       src = ./.;
 
@@ -53,16 +53,25 @@
             description = "CS2 Web Panel Service";
             after = [ "network.target" ];
             wantedBy = [ "multi-user.target" ];
+
             environment = {
-              PORT="${toString config.cs2-rcon-panel.port}";
-              PANEL_USERNAME="${config.cs2-rcon-panel.username}";
-              PANEL_PASSWORD="${config.cs2-rcon-panel.password}";
+              PORT = "${toString config.cs2-rcon-panel.port}";
+              PANEL_USERNAME = "${config.cs2-rcon-panel.username}";
+              PANEL_PASSWORD = "${config.cs2-rcon-panel.password}";
             };
 
             serviceConfig = {
-              ExecStart = ''
-                ${pkgs.nodejs_20}/bin/node ${self.packages.x86_64-linux}/app.js
-              '';
+              ExecStart = "${pkgs.nodejs_20}/bin/node ${pkgs.buildNpmPackage {
+                pname = "cs2-rcon-panel";
+                version = "0.1.0";
+                npmDepsHash = "sha512-uKpLlJfmIsCtelVmivHqu1rAz5gK54t5Oet38i1mDBlSpplqAj0x30zWS3qqewy09CpVgHvIffrNBoJgYC/1ag==";
+
+                src = ./.;
+
+                npmBuildScript = "build";
+
+                nodejs = pkgs.nodejs_20;
+              }}/lib/node_modules/cs2panel/app.js";
               Restart = "always";
             };
           };
