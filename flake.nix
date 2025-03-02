@@ -58,15 +58,15 @@
             description = "CS2 Web Panel Service";
             after = [ "network.target" ];
             wantedBy = [ "multi-user.target" ];
+            environment = {
+              PORT="${toString config.cs2-rcon-panel.port}";
+              PANEL_USERNAME="${config.cs2-rcon-panel.username}";
+              PANEL_PASSWORD="${config.cs2-rcon-panel.password}";
+            };
 
             serviceConfig = {
               ExecStart = ''
                 ${pkgs.nodejs_20}/bin/node ${self.packages.x86_64-linux}/app.js
-              '';
-              Environment = ''
-                PORT=${toString config.cs2-rcon-panel.port}
-                PANEL_USERNAME=${config.cs2-rcon-panel.username}
-                PANEL_PASSWORD=${config.cs2-rcon-panel.password}
               '';
               Restart = "always";
             };
