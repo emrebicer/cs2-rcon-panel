@@ -11,7 +11,7 @@
     pkgs = nixpkgs.legacyPackages.${system};
   in {
     packages.${system}.default = pkgs.stdenv.mkDerivation rec {
-      pname = "cs2-web-panel";
+      pname = "cs2-rcon-panel";
       version = "0.1.0";
 
       src = ./.;
@@ -29,8 +29,8 @@
     };
 
     nixosModules = {
-      cs2-web-panel = { config, lib, pkgs, ... }: with lib; {
-        options.cs2-web-panel = {
+      cs2-rcon-panel = { config, lib, pkgs, ... }: with lib; {
+        options.cs2-rcon-panel = {
           enable = mkOption {
             type = types.bool;
             default = false;
@@ -53,8 +53,8 @@
           };
         };
 
-        config = mkIf config.cs2-web-panel.enable {
-          systemd.services.cs2-web-panel = {
+        config = mkIf config.cs2-rcon-panel.enable {
+          systemd.services.cs2-rcon-panel = {
             description = "CS2 Web Panel Service";
             after = [ "network.target" ];
             wantedBy = [ "multi-user.target" ];
@@ -64,9 +64,9 @@
                 ${pkgs.nodejs_20}/bin/node ${self.packages.x86_64-linux}/app.js
               '';
               Environment = ''
-                PORT=${toString config.cs2-web-panel.port}
-                PANEL_USERNAME=${config.cs2-web-panel.username}
-                PANEL_PASSWORD=${config.cs2-web-panel.password}
+                PORT=${toString config.cs2-rcon-panel.port}
+                PANEL_USERNAME=${config.cs2-rcon-panel.username}
+                PANEL_PASSWORD=${config.cs2-rcon-panel.password}
               '';
               Restart = "always";
             };
